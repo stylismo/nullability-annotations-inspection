@@ -1,7 +1,7 @@
 # IntelliJ IDEA nullability annotations inspection
 
 Reports fields, parameters and return values of methods which do not have a nullability annotation, 
-like **@NotNull** or **@Nullable** <sup>[1](#fn1)</sup>.
+like **@NotNull** or **@Nullable**. <sup>[1](#fn1)</sup>
 
 
 *add screenshot....*
