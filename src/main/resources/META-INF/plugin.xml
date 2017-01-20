@@ -1,0 +1,33 @@
+<idea-plugin>
+    <id>com.stylismo.nullability-annotations-inspection</id>
+    <name>nullability-annotations-inspection</name>
+    <version>0.0.1</version>
+    <vendor url="http://github.com/stylismo/nullability-annotations-inspection">stylismo</vendor>
+
+    <description><![CDATA[
+        Reports fields, parameters and return values of methods which
+        do not have a <b>@NotNull</b> or <b>@Nullable</b> annotation.
+    ]]></description>
+
+    <change-notes>
+        <![CDATA[
+        <h3>Changes in 0.0.1 (2017-01-19)</h3>
+        <ul>
+            <li>[new] Initial release
+        </ul>
+    ]]></change-notes>
+
+    <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
+    <idea-version since-build="145"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="JAVA"
+                         level="WARNING"
+                         enabledByDefault="true"
+                         displayName="Missing @NotNull/@Nullable annotation"
+                         groupName="Probable bugs"
+                         groupPath="Java"
+                         implementationClass="com.stylismo.intellij.inspection.NullabilityAnnotationsInspection"/>
+    </extensions>
+
+</idea-plugin>

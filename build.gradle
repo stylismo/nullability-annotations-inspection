@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url 'http://dl.bintray.com/jetbrains/intellij-plugin-service'
+        }
+
+    }
+    dependencies {
+        classpath "gradle.plugin.org.jetbrains:gradle-intellij-plugin:0.1.10"
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.1.10"
+}
+
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+
+intellij {
+    // IntelliJ IDEA 2016.1 dependency; for a full list of IntelliJ IDEA releases please see
+    // https://www.jetbrains.com/intellij-repository/releases
+    version 'IC-2016.1'
+    pluginName 'nullability-annotations-inspection'
+//    plugins 'coverage' //Bundled plugin dependencies
+
+    publish {
+        pluginId '9418'
+        channel ''
+    }
+}
+
+group 'com.stylismo'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.code.findbugs:jsr305:3.0.1'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'org.assertj:assertj-core:3.6.1'
+}
