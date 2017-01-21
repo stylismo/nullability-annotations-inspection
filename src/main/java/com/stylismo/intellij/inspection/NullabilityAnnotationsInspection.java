@@ -11,7 +11,6 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.psi.*;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -151,10 +150,11 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
 
     private boolean shouldCheckFinalField(PsiField aField) {
         return theReportInitializedFinalFields
-                || (aField.hasModifierProperty(PsiModifier.FINAL) && !hasExpressionElement(aField.getChildren()));
+                || (aField.hasModifierProperty(PsiModifier.FINAL) && !hasExpressionElement(aField.getChildren()))
+                || !aField.hasModifierProperty(PsiModifier.FINAL);
     }
 
-    private boolean hasExpressionElement(@NotNull PsiElement[] aPsiElements) {
+    private boolean hasExpressionElement(PsiElement[] aPsiElements) {
         for (PsiElement myPsiElement : aPsiElements) {
             if ((myPsiElement instanceof PsiExpression)) {
                 return true;
@@ -194,7 +194,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         return signatures;
     }
 
-    private boolean isNonPrivateMethod(@NotNull PsiMethod method) {
+    private boolean isNonPrivateMethod(PsiMethod method) {
         return theReportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
     }
 
