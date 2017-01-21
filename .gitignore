@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+out/
+
+node_modules/
+
+# IDEA
+.idea/libraries
+.idea/scopes
+.idea/.name
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+.idea/uiDesigner.xml
+.idea/dataSources.local.xml
+
+*.iml
+*.ipr
+*.iws
+
+# Mac
+.DS_Store
