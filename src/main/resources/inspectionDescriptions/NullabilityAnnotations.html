@@ -1,12 +1,19 @@
 <html>
 <body>
-Reports fields, parameters and return values of methods which
-do not have a <b>@NotNull</b> or <b>@Nullable</b> annotation.
+Reports fields, parameters and return values of methods which do not have a nullability annotation,
+like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
+
 <br>
-See also:
-<pre>
-    Java | Probable bugs | Constant conditions & exceptions
-    Java | Probable bugs | @NotNull/@Nullable problems
-</pre>
+
+See also related inspections:
+<ul>
+    <li>Java | Probable bugs | Constant conditions & exceptions</li>
+    <li>Java | Probable bugs | @NotNull/@Nullable problems</li>
+</ul>
+
+<p id="fn1">
+    [1]: Any nullability annotation can be used, like JSR-305, JetBrains'
+    or your own as long as you configure them in IDEA.
+</p>
 </body>
 </html>

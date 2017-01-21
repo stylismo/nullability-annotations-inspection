@@ -1,24 +1,40 @@
 <idea-plugin>
     <id>com.stylismo.nullability-annotations-inspection</id>
     <name>nullability-annotations-inspection</name>
-    <version>0.0.1</version>
     <vendor url="http://github.com/stylismo/nullability-annotations-inspection">stylismo</vendor>
 
     <description><![CDATA[
-        Reports fields, parameters and return values of methods which
-        do not have a <b>@NotNull</b> or <b>@Nullable</b> annotation.
+        Reports fields, parameters and return values of methods which do not have a nullability annotation,
+        like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
+
+        <br>
+        <br>
+
+        <p id="fn1">
+            [1]: Any nullability annotation can be used, like JSR-305, JetBrains'
+            or your own as long as you configure them in IDEA.
+        </p>
     ]]></description>
 
     <change-notes>
         <![CDATA[
+        <h3>Changes in 0.0.3 (2017-01-21)</h3>
+        <ul>
+            <li>Added toggles for reporting nullability issues for fields and private methods</li>
+            <li>Added shortcut to annotation configuration dialog</li>
+        </ul>
+        <h3>Changes in 0.0.2 (2017-01-20)</h3>
+        <ul>
+            <li>Update to IDEA 2016.3</li>
+        </ul>
         <h3>Changes in 0.0.1 (2017-01-19)</h3>
         <ul>
-            <li>[new] Initial release
+            <li>[new] Initial release</li>
         </ul>
     ]]></change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="145"/>
+    <idea-version since-build="163"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="JAVA"

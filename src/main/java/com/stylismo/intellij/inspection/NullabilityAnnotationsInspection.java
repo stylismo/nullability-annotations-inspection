@@ -1,119 +1,160 @@
 package com.stylismo.intellij.inspection;
 
 import com.google.common.collect.Lists;
-import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.codeInsight.NullableNotNullManager;
 import com.intellij.codeInsight.intention.impl.AddNotNullAnnotationFix;
 import com.intellij.codeInsight.intention.impl.AddNullableAnnotationFix;
-import com.intellij.codeInspection.*;
+import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
+import com.intellij.codeInspection.InspectionManager;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.psi.*;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.psi.util.TypeConversionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.intellij.codeInsight.AnnotationUtil.ALL_ANNOTATIONS;
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 
 
 public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionTool {
+    private static final String MISSING_NULLABLE_NONNULL_ANNOTATION = "Missing @Nullable/@Nonnull annotation";
+    private boolean theReportFields = true;
+    private boolean theReportInitializedFinalFields = true;
+    private boolean theReportPrivateMethods = true;
 
     @Nullable
-    public ProblemDescriptor[] checkField(@NotNull PsiField field,
-                                          @NotNull InspectionManager manager,
-                                          boolean isOnTheFly) {
-        if (hasAnnotation(field)) {
-            return null;
-        }
-
-        Collection<ProblemDescriptor> myProblemDescriptors = createProblemDescriptors(field, field.getType(), manager);
-        return myProblemDescriptors.toArray(new ProblemDescriptor[myProblemDescriptors.size()]);
+    @Override
+    public JComponent createOptionsPanel() {
+        return new OptionsPanel(this);
     }
 
+    @Nullable
     @Override
-    public ProblemDescriptor[] checkMethod(@NotNull PsiMethod method,
-                                           @NotNull InspectionManager manager,
-                                           boolean isOnTheFly) {
-        List<ProblemDescriptor> problemDescriptors = new ArrayList<>();
+    public ProblemDescriptor[] checkField(PsiField field, InspectionManager manager, boolean isOnTheFly) {
+        if (isMissingNullAnnotation(field, field.getType())) {
+            Collection<ProblemDescriptor> problemDescriptors = Lists.newArrayList();
+            createProblemDescriptorWithQuickFixes(field, manager, problemDescriptors, field);
+            return problemDescriptors.isEmpty()
+                    ? null
+                    : problemDescriptors.toArray(new ProblemDescriptor[problemDescriptors.size()]);
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ProblemDescriptor[] checkMethod(PsiMethod method, InspectionManager manager, boolean isOnTheFly) {
         if (isNonPrivateMethod(method)) {
+            List<ProblemDescriptor> problemDescriptors = new ArrayList<>();
             List<MethodSignatureBackedByPsiMethod> superMethodSignatures = superMethods(method);
             PsiParameter[] parameters = method.getParameterList().getParameters();
             checkMethodParams(manager, problemDescriptors, superMethodSignatures, parameters);
-
             checkMethodReturnType(method, manager, problemDescriptors);
+            return problemDescriptors.isEmpty()
+                    ? null
+                    : problemDescriptors.toArray(new ProblemDescriptor[problemDescriptors.size()]);
         }
-
-        return problemDescriptors.isEmpty()
-                ? null
-                : problemDescriptors.toArray(new ProblemDescriptor[problemDescriptors.size()]);
+        return null;
     }
 
-    private static void checkMethodReturnType(@NotNull PsiMethod method,
-                                              @NotNull InspectionManager manager,
-                                              @NotNull List<ProblemDescriptor> aProblemDescriptors) {
+    @SuppressWarnings("WeakerAccess")
+    public boolean isReportFields() {
+        return theReportFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setReportFields(boolean aReportFields) {
+        theReportFields = aReportFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public boolean isReportInitializedFinalFields() {
+        return theReportInitializedFinalFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setReportInitializedFinalFields(boolean aReportInitializedFinalFields) {
+        theReportInitializedFinalFields = aReportInitializedFinalFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public boolean isReportPrivateMethods() {
+        return theReportPrivateMethods;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setReportPrivateMethods(boolean aReportPrivateMethods) {
+        theReportPrivateMethods = aReportPrivateMethods;
+    }
+
+    private void checkMethodReturnType(PsiMethod method,
+                                       InspectionManager manager,
+                                       List<ProblemDescriptor> aProblemDescriptors) {
         if (!method.isConstructor()
                 && !(method.getReturnType() instanceof PsiPrimitiveType)
                 && !hasAnnotation(method)) {
 
-            LocalQuickFix[] localQuickFixes = createQuickFixes(method);
-
             PsiTypeElement returnTypeElement = method.getReturnTypeElement();
             if (returnTypeElement == null) {
-                throw new RuntimeException("Bad method " + method);
+                return;
             }
 
-            if (returnTypeElement.isPhysical()) {
-                ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                        returnTypeElement,
-                        "Missing @Nullable/@Nonnull annotation",
-                        localQuickFixes,
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                        true,
-                        false);
-                aProblemDescriptors.add(problemDescriptor);
-            }
+            createProblemDescriptorWithQuickFixes(method, manager, aProblemDescriptors, returnTypeElement);
         }
     }
 
-    private static void checkMethodParams(@NotNull InspectionManager manager,
-                                          @NotNull List<ProblemDescriptor> aProblemDescriptors,
-                                          @NotNull List<MethodSignatureBackedByPsiMethod> aSuperMethodSignatures,
-                                          @NotNull PsiParameter[] aParameters) {
+    private void checkMethodParams(InspectionManager manager,
+                                   List<ProblemDescriptor> aProblemDescriptors,
+                                   List<MethodSignatureBackedByPsiMethod> aSuperMethodSignatures,
+                                   PsiParameter[] aParameters) {
         for (int i = 0, parametersLength = aParameters.length; i < parametersLength; i++) {
             PsiParameter parameter = aParameters[i];
             if (parameterNeedsAnnotation(parameter)) {
                 if (!hasAnnotation(parameter) && !hasAnnotationInHierarchy(i, aSuperMethodSignatures)) {
-
-                    LocalQuickFix[] localQuickFixes = createQuickFixes(parameter);
-
-                    if (parameter.isPhysical()) {
-                        ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                                parameter,
-                                "Missing @Nullable/@Nonnull annotation",
-                                localQuickFixes,
-                                ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                                true,
-                                false);
-                        aProblemDescriptors.add(problemDescriptor);
-                    }
+                    createProblemDescriptorWithQuickFixes(parameter, manager, aProblemDescriptors, parameter);
                 }
             }
         }
     }
 
-
-    private static boolean isMissingNullAnnotation(@NotNull PsiField aField, @NotNull PsiType aType) {
-        return (aField.isPhysical())
-                && !TypeConversionUtil.isPrimitiveAndNotNull(aType)
-                && (!aField.hasModifierProperty(PsiModifier.FINAL) || !hasExpressionElement(aField.getChildren())
-                && !(aField instanceof PsiEnumConstant)
-                && !AnnotationUtil.isAnnotated(aField, ALL_ANNOTATIONS));
+    private void createProblemDescriptorWithQuickFixes(PsiModifierListOwner aField,
+                                                       InspectionManager manager,
+                                                       Collection<ProblemDescriptor> aProblemDescriptors,
+                                                       PsiElement aElement) {
+        if (aElement.isPhysical()) {
+            LocalQuickFix[] localQuickFixes = createQuickFixes(aField);
+            ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
+                    aElement,
+                    MISSING_NULLABLE_NONNULL_ANNOTATION,
+                    localQuickFixes,
+                    GENERIC_ERROR_OR_WARNING,
+                    true,
+                    false);
+            aProblemDescriptors.add(problemDescriptor);
+        }
     }
 
-    private static boolean hasExpressionElement(@NotNull PsiElement[] aPsiElements) {
+    private boolean isMissingNullAnnotation(PsiField aField, PsiType aType) {
+        return theReportFields
+                && aField.isPhysical()
+                && !(aField instanceof PsiEnumConstant)
+                && !TypeConversionUtil.isPrimitiveAndNotNull(aType)
+                && shouldCheckFinalField(aField)
+                && !hasAnnotation(aField);
+    }
+
+    private boolean shouldCheckFinalField(PsiField aField) {
+        return theReportInitializedFinalFields
+                || (aField.hasModifierProperty(PsiModifier.FINAL) && !hasExpressionElement(aField.getChildren()));
+    }
+
+    private boolean hasExpressionElement(@NotNull PsiElement[] aPsiElements) {
         for (PsiElement myPsiElement : aPsiElements) {
             if ((myPsiElement instanceof PsiExpression)) {
                 return true;
@@ -122,50 +163,13 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         return false;
     }
 
-    @NotNull
-    private static Collection<ProblemDescriptor> createProblemDescriptors(@NotNull PsiField aField,
-                                                                          @NotNull PsiType aType,
-                                                                          @NotNull InspectionManager manager) {
-        Collection<ProblemDescriptor> myProblemDescriptors = Lists.newArrayList();
-        if (isMissingNullAnnotation(aField, aType)) {
-            LocalQuickFix[] localQuickFixes = createQuickFixes(aField);
-
-            ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    aField,
-                    "Missing @Nullable/@Nonnull annotation",
-                    localQuickFixes,
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                    true,
-                    false);
-            myProblemDescriptors.add(problemDescriptor);
-        }
-        return myProblemDescriptors;
-    }
-    @NotNull
-    private static LocalQuickFix[] createQuickFixes(@NotNull PsiModifierListOwner aOwner) {
-        return new LocalQuickFix[]{
-                new AddNullableAnnotationFix(aOwner) {
-                    @Override
-                    protected boolean isAvailable() {
-                        return true;
-                    }
-                },
-                new AddNotNullAnnotationFix(aOwner) {
-                    @Override
-                    protected boolean isAvailable() {
-                        return true;
-                    }
-                }
-        };
-    }
-
-    private static boolean hasAnnotation(PsiModifierListOwner psiModifierListOwner) {
+    private boolean hasAnnotation(PsiModifierListOwner psiModifierListOwner) {
         return NullableNotNullManager.isNullable(psiModifierListOwner)
                 || NullableNotNullManager.isNotNull(psiModifierListOwner);
     }
 
-    private static boolean hasAnnotationInHierarchy(int parameter,
-                                                    List<MethodSignatureBackedByPsiMethod> superMethodSignatures) {
+    private boolean hasAnnotationInHierarchy(int parameter,
+                                             List<MethodSignatureBackedByPsiMethod> superMethodSignatures) {
         for (MethodSignatureBackedByPsiMethod methodSignature : superMethodSignatures) {
             PsiMethod superMethod = methodSignature.getMethod();
             PsiParameter[] superParameters = superMethod.getParameterList().getParameters();
@@ -177,11 +181,12 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         return false;
     }
 
-    private static boolean parameterNeedsAnnotation(PsiParameter parameter) {
-        return !(parameter.getType() instanceof PsiPrimitiveType) && !parameter.isVarArgs();
+    private boolean parameterNeedsAnnotation(PsiParameter parameter) {
+        return !(parameter.getType() instanceof PsiPrimitiveType)
+                && !parameter.isVarArgs();
     }
 
-    private static List<MethodSignatureBackedByPsiMethod> superMethods(PsiMethod method) {
+    private List<MethodSignatureBackedByPsiMethod> superMethods(PsiMethod method) {
         List<MethodSignatureBackedByPsiMethod> signatures = method.findSuperMethodSignaturesIncludingStatic(true);
         signatures.removeIf(superSignature ->
                 superSignature.getMethod().getParameterList().getParametersCount()
@@ -189,8 +194,24 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         return signatures;
     }
 
-    private static boolean isNonPrivateMethod(@NotNull PsiMethod method) {
-        return !method.hasModifierProperty(PsiModifier.PRIVATE);
+    private boolean isNonPrivateMethod(@NotNull PsiMethod method) {
+        return theReportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
     }
 
+    private LocalQuickFix[] createQuickFixes(PsiModifierListOwner aOwner) {
+        return new LocalQuickFix[]{
+                new AddNotNullAnnotationFix(aOwner) {
+                    @Override
+                    protected boolean isAvailable() {
+                        return true;
+                    }
+                },
+                new AddNullableAnnotationFix(aOwner) {
+                    @Override
+                    protected boolean isAvailable() {
+                        return true;
+                    }
+                }
+        };
+    }
 }
