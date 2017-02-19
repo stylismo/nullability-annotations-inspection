@@ -2,8 +2,6 @@ package com.stylismo.intellij.inspection;
 
 import com.google.common.collect.Lists;
 import com.intellij.codeInsight.NullableNotNullManager;
-import com.intellij.codeInsight.intention.impl.AddNotNullAnnotationFix;
-import com.intellij.codeInsight.intention.impl.AddNullableAnnotationFix;
 import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -29,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static com.stylismo.intellij.inspection.QuickFixFactory.createQuickFixes;
 
 
 public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionTool {
@@ -165,8 +164,8 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean hasExpressionElement(PsiElement[] aPsiElements) {
-        for (PsiElement myPsiElement : aPsiElements) {
-            if ((myPsiElement instanceof PsiExpression)) {
+        for (PsiElement psiElement : aPsiElements) {
+            if ((psiElement instanceof PsiExpression)) {
                 return true;
             }
         }
@@ -206,31 +205,5 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
 
     private boolean isNonPrivateMethod(PsiMethod method) {
         return theReportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
-    }
-
-    private LocalQuickFix[] createQuickFixes(PsiModifierListOwner owner) {
-        List<LocalQuickFix> quickFixes = new ArrayList<>();
-
-        NullabilityAnnotationsWithTypeQualifierDefault.findAnnotations(owner, false)
-                .forEach(s -> quickFixes.add(new AddPackageInfoWithNullabilityDefaultsFix(owner, s)));
-
-        NullabilityAnnotationsWithTypeQualifierDefault.findAnnotations(owner, true)
-                .forEach(s -> quickFixes.add(new AddPackageInfoWithNullabilityDefaultsFix(owner, s)));
-
-        quickFixes.add(new AddNotNullAnnotationFix(owner) {
-            @Override
-            protected boolean isAvailable() {
-                return true;
-            }
-        });
-
-        quickFixes.add(new AddNullableAnnotationFix(owner) {
-            @Override
-            protected boolean isAvailable() {
-                return true;
-            }
-        });
-
-        return quickFixes.toArray(new LocalQuickFix[0]);
     }
 }
