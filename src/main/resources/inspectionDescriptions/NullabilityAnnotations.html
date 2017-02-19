@@ -1,19 +1,35 @@
 <html>
 <body>
-Reports fields, parameters and return values of methods which do not have a nullability annotation,
-like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
-
-<br>
-
-See also related inspections:
-<ul>
-    <li>Java | Probable bugs | Constant conditions & exceptions</li>
-    <li>Java | Probable bugs | @NotNull/@Nullable problems</li>
-</ul>
-
+<p>
+    Reports fields, parameters and return values of methods which do not have a nullability annotation,
+    like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
+</p>
+<p>
+    Quick fixes are presented to add on of the annotations to the elements with a problem.
+</p>
+<p>
+    When your project uses 'default' annotations like <b>@ParamsAreNonnulByDefault</b>
+    by means of JSR305' <span style="font-family:monospace;">javax.annotation.meta.TypeQualifierDefault</span>
+    a quickfix will be presented to apply the annotation to the current package by adding the annotation to the
+    <span style="font-family:monospace;">package-info.java</span>.
+    If the <span style="font-family:monospace;">package-info.java</span> doesn't exist yet in the current package
+    it will be created automatically.
+</p>
+<p>
+    Only annotations registered with IntelliJ will be suggested in the quick fixes.
+    Go to <span style="font-family:monospace;">Preferences | Build | Compiler | Configure annotations ...</span>
+    to register your own.
+</p>
 <p id="fn1">
     [1]: Any nullability annotation can be used, like JSR-305, JetBrains'
     or your own as long as you configure them in IDEA.
 </p>
+<p>
+    See also related inspections:
+</p>
+<ul style="font-family:monospace;">
+    <li>Java | Probable bugs | Constant conditions & exceptions</li>
+    <li>Java | Probable bugs | @NotNull/@Nullable problems</li>
+</ul>
 </body>
 </html>
