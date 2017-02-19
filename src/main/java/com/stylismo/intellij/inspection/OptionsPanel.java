@@ -36,10 +36,10 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedFinalFields.addActionListener(actionListener);
         shouldCheckPrivateMethods.addActionListener(actionListener);
 
-        JButton myOpenConfigureAnnotationsDialogButton = new JButton("Configure annotations");
-        myOpenConfigureAnnotationsDialogButton.addActionListener(it -> {
-            DataContext myDataContext = DataManager.getInstance().getDataContext(OptionsPanel.this);
-            Project project = CommonDataKeys.PROJECT.getData(myDataContext);
+        JButton openConfigureAnnotationsDialogButton = new JButton("Configure annotations");
+        openConfigureAnnotationsDialogButton.addActionListener(it -> {
+            DataContext dataContext = DataManager.getInstance().getDataContext(OptionsPanel.this);
+            Project project = CommonDataKeys.PROJECT.getData(dataContext);
             if (project == null) {
                 project = ProjectManager.getInstance().getDefaultProject();
             }
@@ -47,21 +47,21 @@ class OptionsPanel extends JPanel {
             dialog.show();
         });
 
-        JPanel myPanel = new JPanel(new GridLayoutManager(9, 1));
-        myPanel.add(new Spacer(),
+        JPanel panel = new JPanel(new GridLayoutManager(9, 1));
+        panel.add(new Spacer(),
                 new GridConstraints(8, 0, 1, 1, 0, 2, 1, 6, null, null, null, 0));
 
-        myPanel.add(shouldCheckFields,
+        panel.add(shouldCheckFields,
                 new GridConstraints(0, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
-        myPanel.add(shouldCheckInitializedFinalFields,
+        panel.add(shouldCheckInitializedFinalFields,
                 new GridConstraints(1, 0, 1, 1, 8, 0, 3, 0, null, null, null, 2));
-        myPanel.add(shouldCheckPrivateMethods,
+        panel.add(shouldCheckPrivateMethods,
                 new GridConstraints(2, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
-        myPanel.add(myOpenConfigureAnnotationsDialogButton,
+        panel.add(openConfigureAnnotationsDialogButton,
                 new GridConstraints(6, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
 
-        add(myPanel, BorderLayout.CENTER);
+        add(panel, BorderLayout.CENTER);
 
         reset();
     }
