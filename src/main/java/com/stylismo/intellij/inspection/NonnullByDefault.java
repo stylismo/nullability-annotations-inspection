@@ -6,15 +6,15 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 
+import static java.lang.annotation.RetentionPolicy.*;
+
 @Documented
 @Nonnull
 @TypeQualifierDefault({
-        ElementType.CONSTRUCTOR,
         ElementType.FIELD,
         ElementType.METHOD,
         ElementType.PARAMETER,
-        ElementType.TYPE
 })
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface NullabilityStyle {
+@Retention(RUNTIME)
+public @interface NonnullByDefault {
 }
