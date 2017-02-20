@@ -5,12 +5,16 @@ like **@NotNull** or **@Nullable**.<sup>[1](#fn1)</sup>
 
 Quick fixes are presented to add one of the annotations to the elements with a problem.
 
+![example](example.png)
+
+You can enable/disable the inspection for fields and private methods via ```Preferences | Editor | Inspections```
+
+![example](example-configure-inspection.png)
+
 When your project uses *default annotations* like **@ParamsAreNonnulByDefault**<sup>[1](#fn1)</sup>
 by means of JSR305' ```javax.annotation.meta.TypeQualifierDefault```, a quick fix will be presented to apply 
 the annotation to the current package by adding the annotation to the ```package-info.java```.
 If a ```package-info.java``` does not exist yet it will be created automatically.
-
-![example](example.png)
 
 An example of your custom *default annotation* for your project could be something like this:
 ```java
