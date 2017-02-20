@@ -9,15 +9,14 @@
     like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
 </p>
 <p>
-    Quick fixes are presented to add on of the annotations to the elements with a problem.
+    Quick fixes are presented to add one of the annotations to the elements with a problem.
 </p>
 <p>
-    When your project uses 'default' annotations like <b>@ParamsAreNonnulByDefault</b>
-    by means of JSR305' <span style="font-family:monospace;">javax.annotation.meta.TypeQualifierDefault</span>
-    a quickfix will be presented to apply the annotation to the current package by adding the annotation to the
+    When your project uses 'default' annotations like <b>@ParamsAreNonnulByDefault</b><sup><a href="#fn1">[1]</a></sup>
+    by means of JSR305' <span style="font-family:monospace;">javax.annotation.meta.TypeQualifierDefault</span>,
+    a quick fix will be presented to apply the annotation to the current package by adding the annotation to the
     <span style="font-family:monospace;">package-info.java</span>.
-    If the <span style="font-family:monospace;">package-info.java</span> doesn't exist yet in the current package
-    it will be created automatically.
+    If a <span style="font-family:monospace;">package-info.java</span> doesn't exist yet it will be created automatically.
 </p>
 <p>
     Only annotations registered with IntelliJ will be suggested in the quick fixes.
@@ -34,7 +33,7 @@
         <![CDATA[
         <h3>Changes in 0.0.4 (2017-02-14)</h3>
         <ul>
-            <li>Added quickfix to apply 'defaults' to package-info.java of current package</li>
+            <li>Added quick fix to apply 'defaults' to package-info.java of current package</li>
         </ul>
         <h3>Changes in 0.0.3 (2017-01-21)</h3>
         <ul>
