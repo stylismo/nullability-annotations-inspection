@@ -14,9 +14,7 @@ If a ```package-info.java``` does not exist yet it will be created automatically
 
 An example of your custom *default annotation* for your project could be something like this:
 ```java
-package com.stylismo.intellij.inspection;
-
-import static java.lang.annotation.RetentionPolicy.*;
+package com.stylismo.example;
 
 @Documented
 @Nonnull
