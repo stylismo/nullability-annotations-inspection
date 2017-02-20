@@ -8,9 +8,11 @@
     Reports fields, parameters and return values of methods which do not have a nullability annotation,
     like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
 </p>
+<br/>
 <p>
     Quick fixes are presented to add one of the annotations to the elements with a problem.
 </p>
+<br/>
 <p>
     When your project uses 'default' annotations like <b>@ParamsAreNonnulByDefault</b><sup><a href="#fn1">[1]</a></sup>
     by means of JSR305' <span style="font-family:monospace;">javax.annotation.meta.TypeQualifierDefault</span>,
@@ -18,11 +20,14 @@
     <span style="font-family:monospace;">package-info.java</span>.
     If a <span style="font-family:monospace;">package-info.java</span> doesn't exist yet it will be created automatically.
 </p>
+<br/>
 <p>
     Only annotations registered with IntelliJ will be suggested in the quick fixes.
     Go to <span style="font-family:monospace;">Preferences | Build | Compiler | Configure annotations ...</span>
     to register your own.
 </p>
+<br/>
+<br/>
 <p id="fn1">
     [1]: Any nullability annotation can be used, like JSR-305, JetBrains'
     or your own as long as you configure them in IDEA.

@@ -1,14 +1,13 @@
 # IntelliJ IDEA nullability annotations inspection
 
 Reports fields, parameters and return values of methods which do not have a nullability annotation, 
-like **@NotNull** or **@Nullable**.[^1]
+like **@NotNull** or **@Nullable**.<sup>[1](#fn1)</sup>
 
 Quick fixes are presented to add one of the annotations to the elements with a problem.
 
-When your project uses *default annotations* like **@ParamsAreNonnulByDefault**[^1]
-by means of JSR305' ```javax.annotation.meta.TypeQualifierDefault```,
-a quick fix will be presented to apply the annotation to the current package by adding the annotation to the
-```package-info.java```.
+When your project uses *default annotations* like **@ParamsAreNonnulByDefault**<sup>[1](#fn1)</sup>
+by means of JSR305' ```javax.annotation.meta.TypeQualifierDefault```, a quick fix will be presented to apply 
+the annotation to the current package by adding the annotation to the ```package-info.java```.
 If a ```package-info.java``` does not exist yet it will be created automatically.
 
 ![example](example.png)
@@ -40,5 +39,5 @@ Go to ```Preferences | Build | Compiler | Configure annotations ...``` to regist
 ![example](example-configure-annotations.png)
 
 
-[^1]: Any nullability annotation can be used, like JSR-305, JetBrains' or your own 
-as long as you configure them in IDEA.
+[1](): 
+Any nullability annotation can be used, like JSR-305, JetBrains' or your own as long as you configure them in IDEA.
