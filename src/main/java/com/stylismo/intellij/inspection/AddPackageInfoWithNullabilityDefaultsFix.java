@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
 public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsiElement {
     private final String annotationForTypeQualifierFqn;
 
-    public AddPackageInfoWithNullabilityDefaultsFix(PsiModifierListOwner element,
-                                                    String annotationForTypeQualifierFqn) {
+    AddPackageInfoWithNullabilityDefaultsFix(PsiModifierListOwner element,
+                                             String annotationForTypeQualifierFqn) {
         super(element);
 
         this.annotationForTypeQualifierFqn = annotationForTypeQualifierFqn;
@@ -76,14 +76,14 @@ public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsi
             return;
         }
 
-        PsiJavaFile packageInfoFile = packageInfoFile((PsiPackage) target);
+        PsiJavaFile packageInfoFile = packageInfoFile((PsiPackage) target, file.getContainingDirectory());
         if (packageInfoFile == null) {
             DataManager.getInstance().getDataContextFromFocus().doWhenDone((Consumer<DataContext>) context -> {
                 AnActionEvent event =
                         new AnActionEvent(null, context, "", new Presentation(), ActionManager.getInstance(), 0);
                 new CreatePackageInfoAction().actionPerformed(event);
             });
-            packageInfoFile = packageInfoFile((PsiPackage) target);
+            packageInfoFile = packageInfoFile((PsiPackage) target, file.getContainingDirectory());
         }
 
         if (packageInfoFile != null) {
@@ -109,17 +109,14 @@ public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsi
     }
 
     @Nullable
-    private static PsiJavaFile packageInfoFile(@Nullable PsiPackage aPackage) {
+    private static PsiJavaFile packageInfoFile(@Nullable PsiPackage aPackage, PsiDirectory containingDirectory) {
         if (aPackage == null) {
             return null;
         }
 
-        PsiDirectory[] directories = aPackage.getDirectories();
-        for (PsiDirectory directory : directories) {
-            PsiJavaFile packageInfoFile = (PsiJavaFile) directory.findFile(PsiPackage.PACKAGE_INFO_FILE);
-            if (packageInfoFile != null) {
-                return packageInfoFile;
-            }
+        PsiJavaFile packageInfoFile = (PsiJavaFile) containingDirectory.findFile(PsiPackage.PACKAGE_INFO_FILE);
+        if (packageInfoFile != null) {
+            return packageInfoFile;
         }
 
         return null;
