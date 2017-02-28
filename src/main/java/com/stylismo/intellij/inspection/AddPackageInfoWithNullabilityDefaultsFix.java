@@ -78,17 +78,22 @@ public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsi
 
         PsiJavaFile packageInfoFile = packageInfoFile((PsiPackage) target, file.getContainingDirectory());
         if (packageInfoFile == null) {
-            DataManager.getInstance().getDataContextFromFocus().doWhenDone((Consumer<DataContext>) context -> {
-                AnActionEvent event =
-                        new AnActionEvent(null, context, "", new Presentation(), ActionManager.getInstance(), 0);
-                new CreatePackageInfoAction().actionPerformed(event);
-            });
-            packageInfoFile = packageInfoFile((PsiPackage) target, file.getContainingDirectory());
+            packageInfoFile = createPackageInfoFile(file, (PsiPackage) target);
         }
 
         if (packageInfoFile != null) {
             addAnnotationToPackageInfo(project, packageInfoFile);
         }
+    }
+
+    @Nullable
+    private PsiJavaFile createPackageInfoFile(@NotNull PsiFile file, PsiPackage target) {
+        DataManager.getInstance().getDataContextFromFocus().doWhenDone((Consumer<DataContext>) context -> {
+            AnActionEvent event =
+                    new AnActionEvent(null, context, "", new Presentation(), ActionManager.getInstance(), 0);
+            new CreatePackageInfoAction().actionPerformed(event);
+        });
+        return packageInfoFile(target, file.getContainingDirectory());
     }
 
     private void addAnnotationToPackageInfo(@NotNull Project project, PsiJavaFile packageInfoFile) {
