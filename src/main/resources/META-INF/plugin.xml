@@ -4,6 +4,8 @@
     <vendor url="http://github.com/stylismo/nullability-annotations-inspection">stylismo</vendor>
 
     <description><![CDATA[
+<h1>nullability-annotations-inspections</h1>
+<br/>
 <p>
     Reports fields, parameters and return values of methods which do not have a nullability annotation,
     like <b>@NotNull</b> or <b>@Nullable</b>.<sup><a href="#fn1">[1]</a></sup>
@@ -34,25 +36,16 @@
 </p>
     ]]></description>
 
-    <change-notes>
-        <![CDATA[
-        <h3>Changes in 0.0.4 (2017-02-14)</h3>
-        <ul>
-            <li>Added quick fix to apply 'defaults' to package-info.java of current package</li>
-        </ul>
-        <h3>Changes in 0.0.3 (2017-01-21)</h3>
-        <ul>
-            <li>Added toggles for reporting nullability issues for fields and private methods</li>
-            <li>Added shortcut to annotation configuration dialog</li>
-        </ul>
-        <h3>Changes in 0.0.2 (2017-01-20)</h3>
-        <ul>
-            <li>Update to IDEA 2016.3</li>
-        </ul>
-        <h3>Changes in 0.0.1 (2017-01-19)</h3>
-        <ul>
-            <li>[new] Initial release</li>
-        </ul>
+    <change-notes><![CDATA[
+<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.6"><h3>Changes in 0.0.6</h3></a>(2017-..-..)
+<br/>
+<br/>
+<ul>
+    <li>
+    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/1">[#1]</a>
+    Remove redundant annotations when applying 'default annotation'
+    </li>
+</ul>
     ]]></change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
