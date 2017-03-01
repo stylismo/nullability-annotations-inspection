@@ -32,9 +32,10 @@ import static com.stylismo.intellij.inspection.QuickFixFactory.createQuickFixes;
 
 public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionTool {
     private static final String MISSING_NULLABLE_NONNULL_ANNOTATION = "Missing @Nullable/@Nonnull annotation";
-    private boolean theReportFields = true;
-    private boolean theReportInitializedFinalFields = true;
-    private boolean theReportPrivateMethods = true;
+    private boolean reportFields = true;
+    private boolean reportInitializedFinalFields = true;
+    private boolean reportPrivateMethods = true;
+    private boolean removeRedundantAnnotations = true;
 
     @Nullable
     @Override
@@ -73,32 +74,42 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
 
     @SuppressWarnings("WeakerAccess")
     public boolean isReportFields() {
-        return theReportFields;
+        return reportFields;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public void setReportFields(boolean aReportFields) {
-        theReportFields = aReportFields;
+    public void setReportFields(boolean reportFields) {
+        this.reportFields = reportFields;
     }
 
     @SuppressWarnings("WeakerAccess")
     public boolean isReportInitializedFinalFields() {
-        return theReportInitializedFinalFields;
+        return reportInitializedFinalFields;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public void setReportInitializedFinalFields(boolean aReportInitializedFinalFields) {
-        theReportInitializedFinalFields = aReportInitializedFinalFields;
+    public void setReportInitializedFinalFields(boolean reportInitializedFinalFields) {
+        this.reportInitializedFinalFields = reportInitializedFinalFields;
     }
 
     @SuppressWarnings("WeakerAccess")
     public boolean isReportPrivateMethods() {
-        return theReportPrivateMethods;
+        return reportPrivateMethods;
     }
 
     @SuppressWarnings("WeakerAccess")
-    public void setReportPrivateMethods(boolean aReportPrivateMethods) {
-        theReportPrivateMethods = aReportPrivateMethods;
+    public void setReportPrivateMethods(boolean reportPrivateMethods) {
+        this.reportPrivateMethods = reportPrivateMethods;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public boolean isRemoveRedundantAnnotations() {
+        return removeRedundantAnnotations;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setRemoveRedundantAnnotations(boolean removeRedundantAnnotations) {
+        this.removeRedundantAnnotations = removeRedundantAnnotations;
     }
 
     private void checkMethodReturnType(PsiMethod method,
@@ -136,7 +147,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
                                                        Collection<ProblemDescriptor> aProblemDescriptors,
                                                        PsiElement aElement) {
         if (aElement.isPhysical()) {
-            LocalQuickFix[] localQuickFixes = createQuickFixes(aField);
+            LocalQuickFix[] localQuickFixes = createQuickFixes(aField, isRemoveRedundantAnnotations());
             ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
                     aElement,
                     MISSING_NULLABLE_NONNULL_ANNOTATION,
@@ -149,7 +160,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean isMissingNullAnnotation(PsiField aField, PsiType aType) {
-        return theReportFields
+        return reportFields
                 && aField.isPhysical()
                 && !(aField instanceof PsiEnumConstant)
                 && !TypeConversionUtil.isPrimitiveAndNotNull(aType)
@@ -158,7 +169,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean shouldCheckFinalField(PsiField aField) {
-        return theReportInitializedFinalFields
+        return reportInitializedFinalFields
                 || (aField.hasModifierProperty(PsiModifier.FINAL) && !hasExpressionElement(aField.getChildren()))
                 || !aField.hasModifierProperty(PsiModifier.FINAL);
     }
@@ -204,6 +215,6 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean isNonPrivateMethod(PsiMethod method) {
-        return theReportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
+        return reportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
     }
 }

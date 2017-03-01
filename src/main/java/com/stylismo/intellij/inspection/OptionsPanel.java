@@ -19,6 +19,8 @@ class OptionsPanel extends JPanel {
     private final JCheckBox shouldCheckFields = new JCheckBox("Check fields");
     private final JCheckBox shouldCheckInitializedFinalFields = new JCheckBox("Check initialized final fields");
     private final JCheckBox shouldCheckPrivateMethods = new JCheckBox("Check private methods");
+    private final JCheckBox shouldRemoveRedundantAnnotations =
+            new JCheckBox("Remove redundant annotations after applying 'default' to package");
     private final NullabilityAnnotationsInspection owner;
 
     OptionsPanel(NullabilityAnnotationsInspection owner) {
@@ -35,6 +37,7 @@ class OptionsPanel extends JPanel {
         shouldCheckFields.addActionListener(actionListener);
         shouldCheckInitializedFinalFields.addActionListener(actionListener);
         shouldCheckPrivateMethods.addActionListener(actionListener);
+        shouldRemoveRedundantAnnotations.addActionListener(actionListener);
 
         JButton openConfigureAnnotationsDialogButton = new JButton("Configure annotations");
         openConfigureAnnotationsDialogButton.addActionListener(it -> {
@@ -58,6 +61,9 @@ class OptionsPanel extends JPanel {
         panel.add(shouldCheckPrivateMethods,
                 new GridConstraints(2, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
+        panel.add(shouldRemoveRedundantAnnotations,
+                new GridConstraints(4, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
+
         panel.add(openConfigureAnnotationsDialogButton,
                 new GridConstraints(6, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
 
@@ -71,6 +77,7 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedFinalFields.setSelected(owner.isReportInitializedFinalFields());
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         shouldCheckPrivateMethods.setSelected(owner.isReportPrivateMethods());
+        shouldRemoveRedundantAnnotations.setSelected(owner.isRemoveRedundantAnnotations());
     }
 
     private void apply() {
@@ -78,5 +85,6 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         owner.setReportInitializedFinalFields(shouldCheckInitializedFinalFields.isSelected());
         owner.setReportPrivateMethods(shouldCheckPrivateMethods.isSelected());
+        owner.setRemoveRedundantAnnotations(shouldRemoveRedundantAnnotations.isSelected());
     }
 }

@@ -15,7 +15,6 @@ import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,11 +26,11 @@ import static com.intellij.codeInsight.AnnotationTargetUtil.extractRequiredAnnot
 import static com.intellij.codeInsight.AnnotationTargetUtil.getTargetsForLocation;
 
 class NullabilityAnnotationsWithTypeQualifierDefault {
-    private static final String TYPE_QUALIFIER_DEFAULT = "javax.annotation.meta.TypeQualifierDefault";
+    static final String TYPE_QUALIFIER_DEFAULT = "javax.annotation.meta.TypeQualifierDefault";
     private static final String JAVAX_ANNOTATION_NULLABLE = "javax.annotation.Nullable";
     private static final String JAVAX_ANNOTATION_NONNULL = "javax.annotation.Nonnull";
 
-    static List<String> findAnnotations(@NotNull PsiModifierListOwner element, boolean nullable) {
+    static List<String> findAnnotations(PsiModifierListOwner element, boolean nullable) {
         if (overridesSuper(element)) {
             return Collections.emptyList();
         }
@@ -71,7 +70,7 @@ class NullabilityAnnotationsWithTypeQualifierDefault {
         return signatures;
     }
 
-    private static boolean isNullabilityAnnotationForTypeQualifierDefault(@NotNull PsiAnnotation annotation,
+    private static boolean isNullabilityAnnotationForTypeQualifierDefault(PsiAnnotation annotation,
                                                                           boolean nullable,
                                                                           PsiAnnotation.TargetType[] targetTypes) {
         PsiJavaCodeReferenceElement element = annotation.getNameReferenceElement();
