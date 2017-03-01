@@ -1,5 +1,10 @@
 # IntelliJ IDEA nullability annotations inspection
 
+[![Build Status][travis-img]][travis-link]
+[![Version][version-img]][plugin-link]
+[![Downloads][downloads-img]][plugin-link]
+[![Downloads last month][downloads-lm-img]][plugin-link]
+
 Reports fields, parameters and return values of methods which do not have a nullability annotation, 
 like **@NotNull** or **@Nullable**.<sup>[1](#fn1)</sup>
 
@@ -43,3 +48,11 @@ Go to ```Preferences | Build | Compiler | Configure annotations ...``` to regist
 
 [1](): 
 Any nullability annotation can be used, like JSR-305, JetBrains' or your own as long as you configure them in IDEA.
+
+
+[travis-img]:           https://travis-ci.org/stylismo/nullability-annotations-inspection.svg
+[travis-link]:          https://travis-ci.org/stylismo/nullability-annotations-inspection
+[version-img]:          http://phpstorm.espend.de/badge/9418/version
+[downloads-img]:        http://phpstorm.espend.de/badge/9418/downloads
+[downloads-lm-img]:     http://phpstorm.espend.de/badge/9418/last-month
+[plugin-link]:          https://plugins.jetbrains.com/plugin/9418
