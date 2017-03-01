@@ -38,7 +38,11 @@ public @interface NonnullByDefault {
 ```
 
 Applying this **@NonnullByDefault** annotation to a package will result in all fields, methods and parameters to be 
-non-null, unless an element is annotated with one of the registered **@Nullable** annotations.
+non-null, unless an element is annotated with one of the registered **@Nullable** annotations or the method is 
+overriding a method in a superclass.
+ 
+By default all redundant annotations will be removed after applying the default annotation to the package. 
+See related issue for the details [here](https://github.com/stylismo/nullability-annotations-inspection/issues/1). 
 
 Only annotations registered with IntelliJ will be suggested in the quick fixes.
 Go to ```Preferences | Build | Compiler | Configure annotations ...``` to register your own.
