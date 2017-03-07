@@ -23,6 +23,7 @@ apply plugin: 'java'
 
 intellij {
     version 'IC-2016.3' // https://www.jetbrains.com/intellij-repository/releases
+    updateSinceUntilBuild false
     pluginName 'nullability-annotations-inspection'
 
     publish {
