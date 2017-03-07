@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.0.7](https://github.com/stylismo/nullability-annotations-inspection/tree/0.0.7) (2017-03-07)
+[Full Changelog](https://github.com/stylismo/nullability-annotations-inspection/compare/0.0.6...0.0.7)
+
+**Implemented enhancements:**
+
+- Do not set 'until-build' idea-version property on build [\#5](https://github.com/stylismo/nullability-annotations-inspection/pull/5) ([narbsy](https://github.com/narbsy))
+
 ## [0.0.6](https://github.com/stylismo/nullability-annotations-inspection/tree/0.0.6) (2017-03-01)
 [Full Changelog](https://github.com/stylismo/nullability-annotations-inspection/compare/0.0.5...0.0.6)
 
