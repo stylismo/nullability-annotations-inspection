@@ -37,13 +37,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
-<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.6"><h3>Changes in 0.0.6</h3></a> (2017-03-01)
+<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.7"><h3>Changes in 0.0.7</h3></a> (2017-03-07)
 <br/>
 <br/>
 <ul>
     <li>
-    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/1">[#1]</a>
-    Remove redundant annotations when applying 'default annotation'
+    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/5">[#5]</a>
+    Do not set 'until-build' idea-version property on build
     </li>
 </ul>
     ]]></change-notes>
