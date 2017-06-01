@@ -37,19 +37,19 @@
     ]]></description>
 
     <change-notes><![CDATA[
-<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.7"><h3>Changes in 0.0.7</h3></a> (2017-03-07)
+<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.8"><h3>Changes in 0.0.8</h3></a> (2017-06-01)
 <br/>
 <br/>
 <ul>
     <li>
-    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/5">[#5]</a>
-    Do not set 'until-build' idea-version property on build
+    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/7">[#7]</a>
+    Incompatible with Android Studio
     </li>
 </ul>
     ]]></change-notes>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="163"/>
+    <idea-version since-build="162"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="JAVA"
