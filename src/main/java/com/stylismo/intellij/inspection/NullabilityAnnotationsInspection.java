@@ -102,7 +102,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
 
     @SuppressWarnings("WeakerAccess")
     public void setReportInitializedStaticFinalFields(boolean reportInitializedStaticFinalFields) {
-        this.reportInitializedStaticFinalFields = reportInitializedFinalFields;
+        this.reportInitializedStaticFinalFields = reportInitializedStaticFinalFields;
     }
 
     @SuppressWarnings("WeakerAccess")
