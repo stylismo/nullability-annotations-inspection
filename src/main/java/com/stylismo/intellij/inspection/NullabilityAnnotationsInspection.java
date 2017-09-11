@@ -11,7 +11,6 @@ import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiPrimitiveType;
@@ -27,12 +26,16 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static com.intellij.psi.PsiModifier.FINAL;
+import static com.intellij.psi.PsiModifier.PRIVATE;
+import static com.intellij.psi.PsiModifier.STATIC;
 import static com.stylismo.intellij.inspection.QuickFixFactory.createQuickFixes;
 
 
 public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionTool {
     private static final String MISSING_NULLABLE_NONNULL_ANNOTATION = "Missing @Nullable/@Nonnull annotation";
     private boolean reportFields = true;
+    private boolean reportInitializedStaticFinalFields = true;
     private boolean reportInitializedFinalFields = true;
     private boolean reportPrivateMethods = true;
     private boolean removeRedundantAnnotations = true;
@@ -93,6 +96,16 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     @SuppressWarnings("WeakerAccess")
+    public boolean isReportInitializedStaticFinalFields() {
+        return reportInitializedStaticFinalFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setReportInitializedStaticFinalFields(boolean reportInitializedStaticFinalFields) {
+        this.reportInitializedStaticFinalFields = reportInitializedFinalFields;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public boolean isReportPrivateMethods() {
         return reportPrivateMethods;
     }
@@ -142,40 +155,52 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         }
     }
 
-    private void createProblemDescriptorWithQuickFixes(PsiModifierListOwner aField,
+    private void createProblemDescriptorWithQuickFixes(PsiModifierListOwner owner,
                                                        InspectionManager manager,
-                                                       Collection<ProblemDescriptor> aProblemDescriptors,
-                                                       PsiElement aElement) {
-        if (aElement.isPhysical()) {
-            LocalQuickFix[] localQuickFixes = createQuickFixes(aField, isRemoveRedundantAnnotations());
+                                                       Collection<ProblemDescriptor> problemDescriptors,
+                                                       PsiElement element) {
+        if (element.isPhysical()) {
+            LocalQuickFix[] localQuickFixes = createQuickFixes(owner, isRemoveRedundantAnnotations());
             ProblemDescriptor problemDescriptor = manager.createProblemDescriptor(
-                    aElement,
+                    element,
                     MISSING_NULLABLE_NONNULL_ANNOTATION,
                     localQuickFixes,
                     GENERIC_ERROR_OR_WARNING,
                     true,
                     false);
-            aProblemDescriptors.add(problemDescriptor);
+            problemDescriptors.add(problemDescriptor);
         }
     }
 
-    private boolean isMissingNullAnnotation(PsiField aField, PsiType aType) {
+    private boolean isMissingNullAnnotation(PsiField field, PsiType type) {
         return reportFields
-                && aField.isPhysical()
-                && !(aField instanceof PsiEnumConstant)
-                && !TypeConversionUtil.isPrimitiveAndNotNull(aType)
-                && shouldCheckFinalField(aField)
-                && !hasAnnotation(aField);
+                && field.isPhysical()
+                && !(field instanceof PsiEnumConstant)
+                && !TypeConversionUtil.isPrimitiveAndNotNull(type)
+                && (shouldCheckFinalField(field) || shouldCheckStaticFinalField(field))
+                && !hasAnnotation(field);
     }
 
-    private boolean shouldCheckFinalField(PsiField aField) {
+    private boolean shouldCheckStaticFinalField(PsiField field) {
+        return reportInitializedStaticFinalFields
+                || (
+                field.hasModifierProperty(FINAL)
+                        && field.hasModifierProperty(STATIC)
+                        && !hasExpressionElement(field.getChildren()))
+                || !field.hasModifierProperty(FINAL);
+    }
+
+    private boolean shouldCheckFinalField(PsiField field) {
         return reportInitializedFinalFields
-                || (aField.hasModifierProperty(PsiModifier.FINAL) && !hasExpressionElement(aField.getChildren()))
-                || !aField.hasModifierProperty(PsiModifier.FINAL);
+                || (
+                field.hasModifierProperty(FINAL)
+                        && !field.hasModifierProperty(STATIC)
+                        && !hasExpressionElement(field.getChildren()))
+                || !field.hasModifierProperty(FINAL);
     }
 
-    private boolean hasExpressionElement(PsiElement[] aPsiElements) {
-        for (PsiElement psiElement : aPsiElements) {
+    private boolean hasExpressionElement(PsiElement[] psiElements) {
+        for (PsiElement psiElement : psiElements) {
             if ((psiElement instanceof PsiExpression)) {
                 return true;
             }
@@ -215,6 +240,6 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean isNonPrivateMethod(PsiMethod method) {
-        return reportPrivateMethods || !method.hasModifierProperty(PsiModifier.PRIVATE);
+        return reportPrivateMethods || !method.hasModifierProperty(PRIVATE);
     }
 }

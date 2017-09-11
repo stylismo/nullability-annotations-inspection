@@ -17,6 +17,8 @@ import java.awt.event.ActionListener;
 
 class OptionsPanel extends JPanel {
     private final JCheckBox shouldCheckFields = new JCheckBox("Check fields");
+    private final JCheckBox shouldCheckInitializedStaticFinalFields =
+            new JCheckBox("Check initialized static final fields");
     private final JCheckBox shouldCheckInitializedFinalFields = new JCheckBox("Check initialized final fields");
     private final JCheckBox shouldCheckPrivateMethods = new JCheckBox("Check private methods");
     private final JCheckBox shouldRemoveRedundantAnnotations =
@@ -35,6 +37,7 @@ class OptionsPanel extends JPanel {
         ActionListener actionListener = it -> apply();
 
         shouldCheckFields.addActionListener(actionListener);
+        shouldCheckInitializedStaticFinalFields.addActionListener(actionListener);
         shouldCheckInitializedFinalFields.addActionListener(actionListener);
         shouldCheckPrivateMethods.addActionListener(actionListener);
         shouldRemoveRedundantAnnotations.addActionListener(actionListener);
@@ -56,16 +59,18 @@ class OptionsPanel extends JPanel {
 
         panel.add(shouldCheckFields,
                 new GridConstraints(0, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
-        panel.add(shouldCheckInitializedFinalFields,
+        panel.add(shouldCheckInitializedStaticFinalFields,
                 new GridConstraints(1, 0, 1, 1, 8, 0, 3, 0, null, null, null, 2));
+        panel.add(shouldCheckInitializedFinalFields,
+                new GridConstraints(2, 0, 1, 1, 8, 0, 3, 0, null, null, null, 2));
         panel.add(shouldCheckPrivateMethods,
-                new GridConstraints(2, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
+                new GridConstraints(3, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
         panel.add(shouldRemoveRedundantAnnotations,
-                new GridConstraints(4, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
+                new GridConstraints(5, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
         panel.add(openConfigureAnnotationsDialogButton,
-                new GridConstraints(6, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
+                new GridConstraints(7, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
 
         add(panel, BorderLayout.CENTER);
 
@@ -74,6 +79,8 @@ class OptionsPanel extends JPanel {
 
     private void reset() {
         shouldCheckFields.setSelected(owner.isReportFields());
+        shouldCheckInitializedStaticFinalFields.setSelected(owner.isReportInitializedStaticFinalFields());
+        shouldCheckInitializedStaticFinalFields.setEnabled(owner.isReportFields());
         shouldCheckInitializedFinalFields.setSelected(owner.isReportInitializedFinalFields());
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         shouldCheckPrivateMethods.setSelected(owner.isReportPrivateMethods());
@@ -82,6 +89,8 @@ class OptionsPanel extends JPanel {
 
     private void apply() {
         owner.setReportFields(shouldCheckFields.isSelected());
+        shouldCheckInitializedStaticFinalFields.setEnabled(owner.isReportFields());
+        owner.setReportInitializedStaticFinalFields(shouldCheckInitializedStaticFinalFields.isSelected());
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         owner.setReportInitializedFinalFields(shouldCheckInitializedFinalFields.isSelected());
         owner.setReportPrivateMethods(shouldCheckPrivateMethods.isSelected());
