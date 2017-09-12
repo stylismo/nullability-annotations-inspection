@@ -49,7 +49,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     @Nullable
     @Override
     public ProblemDescriptor[] checkField(PsiField field, InspectionManager manager, boolean isOnTheFly) {
-        if (isMissingNullAnnotation(field, field.getType())) {
+        if (isFieldMissingNullAnnotation(field, field.getType())) {
             Collection<ProblemDescriptor> problemDescriptors = Lists.newArrayList();
             createProblemDescriptorWithQuickFixes(field, manager, problemDescriptors, field);
             return problemDescriptors.isEmpty()
@@ -172,31 +172,23 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
         }
     }
 
-    private boolean isMissingNullAnnotation(PsiField field, PsiType type) {
+    private boolean isFieldMissingNullAnnotation(PsiField field, PsiType type) {
         return reportFields
                 && field.isPhysical()
                 && !(field instanceof PsiEnumConstant)
                 && !TypeConversionUtil.isPrimitiveAndNotNull(type)
-                && (shouldCheckFinalField(field) || shouldCheckStaticFinalField(field))
+                && shouldCheckField(field)
                 && !hasAnnotation(field);
     }
 
-    private boolean shouldCheckStaticFinalField(PsiField field) {
-        return reportInitializedStaticFinalFields
-                || (
-                field.hasModifierProperty(FINAL)
-                        && field.hasModifierProperty(STATIC)
-                        && !hasExpressionElement(field.getChildren()))
-                || !field.hasModifierProperty(FINAL);
-    }
-
-    private boolean shouldCheckFinalField(PsiField field) {
-        return reportInitializedFinalFields
-                || (
-                field.hasModifierProperty(FINAL)
-                        && !field.hasModifierProperty(STATIC)
-                        && !hasExpressionElement(field.getChildren()))
-                || !field.hasModifierProperty(FINAL);
+    private boolean shouldCheckField(PsiField field) {
+        if (field.hasModifierProperty(FINAL)) {
+            if (field.hasModifierProperty(STATIC)) {
+                return reportInitializedStaticFinalFields || !hasExpressionElement(field.getChildren());
+            }
+            return reportInitializedFinalFields || !hasExpressionElement(field.getChildren());
+        }
+        return true;
     }
 
     private boolean hasExpressionElement(PsiElement[] psiElements) {
