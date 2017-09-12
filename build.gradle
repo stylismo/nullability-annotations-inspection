@@ -33,7 +33,7 @@ intellij {
 }
 
 group 'com.stylismo'
-version '0.0.8'
+version '0.0.9'
 
 repositories {
     mavenCentral()
