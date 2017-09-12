@@ -37,13 +37,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
-<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.8"><h3>Changes in 0.0.8</h3></a> (2017-06-01)
+<a href="https://github.com/stylismo/nullability-annotations-inspection/releases/tag/0.0.9"><h3>Changes in 0.0.9</h3></a> (2017-09-12)
 <br/>
 <br/>
 <ul>
     <li>
-    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/7">[#7]</a>
-    Incompatible with Android Studio
+    <a href="https://github.com/stylismo/nullability-annotations-inspection/issues/8">[#8]</a>
+    Distinguish between static and non-static final fields
     </li>
 </ul>
     ]]></change-notes>

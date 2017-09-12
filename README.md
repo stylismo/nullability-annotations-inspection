@@ -1,5 +1,6 @@
 # IntelliJ IDEA nullability annotations inspection
 
+[![Build Status][circleci-img]][circleci-link]
 [![Build Status][travis-img]][travis-link]
 [![Version][version-img]][plugin-link]
 [![Downloads][downloads-img]][plugin-link]
@@ -53,7 +54,8 @@ Go to ```Preferences | Build | Compiler | Configure annotations ...``` to regist
 [1](): 
 Any nullability annotation can be used, like JSR-305, JetBrains' or your own as long as you configure them in IDEA.
 
-
+[circleci-img]:         https://circleci.com/gh/stylismo/nullability-annotations-inspection.svg?style=shield
+[circleci-link]:        https://circleci.com/gh/stylismo/nullability-annotations-inspection
 [travis-img]:           https://travis-ci.org/stylismo/nullability-annotations-inspection.svg
 [travis-link]:          https://travis-ci.org/stylismo/nullability-annotations-inspection
 [version-img]:          http://phpstorm.espend.de/badge/9418/version
