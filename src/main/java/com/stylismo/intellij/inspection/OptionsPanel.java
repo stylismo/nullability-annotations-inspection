@@ -21,6 +21,7 @@ class OptionsPanel extends JPanel {
             new JCheckBox("Check initialized static final fields");
     private final JCheckBox shouldCheckInitializedFinalFields = new JCheckBox("Check initialized final fields");
     private final JCheckBox shouldCheckPrivateMethods = new JCheckBox("Check private methods");
+    private final JCheckBox shouldCheckTypeVariableTyped = new JCheckBox("Check type variable typed declarations");
     private final JCheckBox shouldRemoveRedundantAnnotations =
             new JCheckBox("Remove redundant annotations after applying 'default' to package");
     private final NullabilityAnnotationsInspection owner;
@@ -40,6 +41,7 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedStaticFinalFields.addActionListener(actionListener);
         shouldCheckInitializedFinalFields.addActionListener(actionListener);
         shouldCheckPrivateMethods.addActionListener(actionListener);
+        shouldCheckTypeVariableTyped.addActionListener(actionListener);
         shouldRemoveRedundantAnnotations.addActionListener(actionListener);
 
         JButton openConfigureAnnotationsDialogButton = new JButton("Configure annotations");
@@ -65,12 +67,14 @@ class OptionsPanel extends JPanel {
                 new GridConstraints(2, 0, 1, 1, 8, 0, 3, 0, null, null, null, 2));
         panel.add(shouldCheckPrivateMethods,
                 new GridConstraints(3, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
+        panel.add(shouldCheckTypeVariableTyped,
+                new GridConstraints(4, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
         panel.add(shouldRemoveRedundantAnnotations,
-                new GridConstraints(5, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
+                new GridConstraints(6, 0, 1, 1, 8, 0, 3, 0, null, null, null, 0));
 
         panel.add(openConfigureAnnotationsDialogButton,
-                new GridConstraints(7, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
+                new GridConstraints(8, 0, 1, 1, 8, 0, 0, 0, null, null, null, 0));
 
         add(panel, BorderLayout.CENTER);
 
@@ -84,6 +88,7 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedFinalFields.setSelected(owner.isReportInitializedFinalFields());
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         shouldCheckPrivateMethods.setSelected(owner.isReportPrivateMethods());
+        shouldCheckTypeVariableTyped.setSelected(owner.isReportTypeVariableTyped());
         shouldRemoveRedundantAnnotations.setSelected(owner.isRemoveRedundantAnnotations());
     }
 
@@ -94,6 +99,7 @@ class OptionsPanel extends JPanel {
         shouldCheckInitializedFinalFields.setEnabled(owner.isReportFields());
         owner.setReportInitializedFinalFields(shouldCheckInitializedFinalFields.isSelected());
         owner.setReportPrivateMethods(shouldCheckPrivateMethods.isSelected());
+        owner.setReportTypeVariableTyped(shouldCheckTypeVariableTyped.isSelected());
         owner.setRemoveRedundantAnnotations(shouldRemoveRedundantAnnotations.isSelected());
     }
 }
