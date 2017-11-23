@@ -143,7 +143,6 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
                                        InspectionManager manager,
                                        List<ProblemDescriptor> aProblemDescriptors) {
         if (!method.isConstructor()
-                && !(method.getReturnType() instanceof PsiPrimitiveType)
                 && !isIgnoredType(method.getReturnType())
                 && !hasAnnotation(method)) {
 
