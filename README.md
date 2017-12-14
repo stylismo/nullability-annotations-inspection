@@ -32,6 +32,9 @@ package com.stylismo.example;
         ElementType.FIELD,
         ElementType.METHOD,
         ElementType.PARAMETER,
+        ElementType.LOCAL_VARIABLE,
+        ElementType.TYPE_PARAMETER,
+        ElementType.TYPE_USE
 })
 @Retention(RUNTIME)
 public @interface NonnullByDefault {

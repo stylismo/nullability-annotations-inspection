@@ -1,11 +1,11 @@
 # Change Log
 
-## [0.0.10](https://github.com/stylismo/nullability-annotations-inspection/tree/0.0.10) (2017-11-22)
+## [0.0.10](https://github.com/stylismo/nullability-annotations-inspection/tree/0.0.10) (2017-12-14)
 [Full Changelog](https://github.com/stylismo/nullability-annotations-inspection/compare/0.0.9...0.0.10)
 
 **Implemented enhancements:**
 
-- Add option for ignoring type variable typed declarations [\#11](https://github.com/stylismo/nullability-annotations-inspection/issues/11)
+- Support nullability annotations on type-parameter-typed declarations [\#11](https://github.com/stylismo/nullability-annotations-inspection/issues/11)
 
 ## [0.0.9](https://github.com/stylismo/nullability-annotations-inspection/tree/0.0.9) (2017-09-12)
 [Full Changelog](https://github.com/stylismo/nullability-annotations-inspection/compare/0.0.8...0.0.9)
