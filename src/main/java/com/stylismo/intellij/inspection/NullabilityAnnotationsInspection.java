@@ -16,6 +16,9 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.PsiTypeParameter;
+import com.intellij.psi.PsiTypeVariable;
+import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.psi.util.TypeConversionUtil;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +41,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     private boolean reportInitializedStaticFinalFields = true;
     private boolean reportInitializedFinalFields = true;
     private boolean reportPrivateMethods = true;
+    private boolean reportTypeVariableTyped = true;
     private boolean removeRedundantAnnotations = true;
 
     @Nullable
@@ -116,6 +120,16 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     @SuppressWarnings("WeakerAccess")
+    public boolean isReportTypeVariableTyped() {
+        return reportTypeVariableTyped;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void setReportTypeVariableTyped(boolean reportTypeVariableTyped) {
+        this.reportTypeVariableTyped = reportTypeVariableTyped;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public boolean isRemoveRedundantAnnotations() {
         return removeRedundantAnnotations;
     }
@@ -129,7 +143,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
                                        InspectionManager manager,
                                        List<ProblemDescriptor> aProblemDescriptors) {
         if (!method.isConstructor()
-                && !(method.getReturnType() instanceof PsiPrimitiveType)
+                && !isIgnoredType(method.getReturnType())
                 && !hasAnnotation(method)) {
 
             PsiTypeElement returnTypeElement = method.getReturnTypeElement();
@@ -182,6 +196,9 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean shouldCheckField(PsiField field) {
+        if (isIgnoredType(field.getType())) {
+            return false;
+        }
         if (field.hasModifierProperty(FINAL)) {
             if (field.hasModifierProperty(STATIC)) {
                 return reportInitializedStaticFinalFields || !hasExpressionElement(field.getChildren());
@@ -219,7 +236,7 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
     }
 
     private boolean parameterNeedsAnnotation(PsiParameter parameter) {
-        return !(parameter.getType() instanceof PsiPrimitiveType)
+        return !isIgnoredType(parameter.getType())
                 && !parameter.isVarArgs();
     }
 
@@ -233,5 +250,19 @@ public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionToo
 
     private boolean isNonPrivateMethod(PsiMethod method) {
         return reportPrivateMethods || !method.hasModifierProperty(PRIVATE);
+    }
+
+    /** Returns true if the type is a primitive or non-reportable type variable. */
+    private boolean isIgnoredType(@Nullable PsiType psiType) {
+        return psiType == null
+                || psiType instanceof PsiPrimitiveType
+                || !reportTypeVariableTyped && isTypeVariable(psiType);
+    }
+
+    /** Returns true if the type is a type variable or a type parameter reference. */
+    private static boolean isTypeVariable(@Nullable PsiType psiType) {
+        return psiType instanceof PsiTypeVariable
+                || psiType instanceof PsiClassReferenceType
+                && ((PsiClassReferenceType) psiType).resolve() instanceof PsiTypeParameter;
     }
 }
