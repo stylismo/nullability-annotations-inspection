@@ -1,25 +1,7 @@
-# Gradle
-.gradle/
-build/
-out/
+.gradle
+.idea
+build
 
-node_modules/
-
-# IDEA
-.idea/libraries
-.idea/scopes
-.idea/.name
-.idea/compiler.xml
-.idea/encodings.xml
-.idea/gradle.xml
-.idea/modules.xml
-.idea/workspace.xml
-.idea/uiDesigner.xml
-.idea/dataSources.local.xml
-
-*.iml
-*.ipr
-*.iws
-
-# Mac
+out
+node_modules
 .DS_Store

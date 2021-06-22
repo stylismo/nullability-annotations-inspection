@@ -1,7 +1,6 @@
 package com.stylismo.intellij.inspection;
 
-import com.intellij.codeInsight.intention.impl.AddNotNullAnnotationFix;
-import com.intellij.codeInsight.intention.impl.AddNullableAnnotationFix;
+import com.intellij.codeInsight.intention.AddAnnotationPsiFix;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.psi.PsiModifierListOwner;
 
@@ -25,19 +24,9 @@ class QuickFixFactory {
                         true,
                         removeRedundantAnnotations)));
 
-        quickFixes.add(new AddNotNullAnnotationFix(owner) {
-            @Override
-            protected boolean isAvailable() {
-                return true;
-            }
-        });
+        quickFixes.add(AddAnnotationPsiFix.createAddNotNullFix(owner));
 
-        quickFixes.add(new AddNullableAnnotationFix(owner) {
-            @Override
-            protected boolean isAvailable() {
-                return true;
-            }
-        });
+        quickFixes.add(AddAnnotationPsiFix.createAddNullableFix(owner));
 
         return quickFixes.toArray(new LocalQuickFix[0]);
     }
