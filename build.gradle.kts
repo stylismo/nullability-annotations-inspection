@@ -5,10 +5,12 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
     // Java support
     id("java")
-    // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
+    // Gradle IntelliJ Plugin
     id("org.jetbrains.intellij") version "1.2.1"
-    // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+    // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
+    // Gradle Qodana Plugin
+    id("org.jetbrains.qodana") version "0.1.12"
 }
 
 group = properties("pluginGroup")
@@ -18,8 +20,9 @@ version = properties("pluginVersion")
 repositories {
     mavenCentral()
 }
+
 dependencies {
-    implementation("com.google.code.findbugs:jsr305:3.0.1")
+    implementation("com.google.code.findbugs:jsr305:3.0.2")
 
 //    testImplementation("junit:junit:4.13.2")
 //    testImplementation("org.assertj:assertj-core:3.20.2")
@@ -41,15 +44,29 @@ intellij {
 // Configure gradle-changelog-plugin plugin.
 // Read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-    version = properties("pluginVersion")
-    groups = emptyList()
+    version.set(properties("pluginVersion"))
+    groups.set(emptyList())
+}
+
+// Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin
+qodana {
+    cachePath.set(projectDir.resolve(".qodana").canonicalPath)
+    reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
+    saveReport.set(true)
+    showReport.set(System.getenv("QODANA_SHOW_REPORT").toBoolean())
 }
 
 tasks {
-    // Set the compatibility versions to 1.8
-    withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
+    // Set the JVM compatibility versions
+    properties("javaVersion").let {
+        withType<JavaCompile> {
+            sourceCompatibility = it
+            targetCompatibility = it
+        }
+    }
+
+    wrapper {
+        gradleVersion = properties("gradleVersion")
     }
 
     patchPluginXml {
@@ -76,6 +93,21 @@ tasks {
 
     runPluginVerifier {
         ideVersions.set(properties("pluginVerifierIdeVersions").split(',').map(String::trim).filter(String::isNotEmpty))
+    }
+
+    // Configure UI tests plugin
+    // Read more: https://github.com/JetBrains/intellij-ui-test-robot
+    runIdeForUiTests {
+        systemProperty("robot-server.port", "8082")
+        systemProperty("ide.mac.message.dialogs.as.sheets", "false")
+        systemProperty("jb.privacy.policy.text", "<!--999.999-->")
+        systemProperty("jb.consents.confirmation.enabled", "false")
+    }
+
+    signPlugin {
+        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+        privateKey.set(System.getenv("PRIVATE_KEY"))
+        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
     }
 
     publishPlugin {
