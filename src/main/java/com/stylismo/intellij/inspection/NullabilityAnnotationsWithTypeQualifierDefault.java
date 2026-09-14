@@ -81,7 +81,7 @@ class NullabilityAnnotationsWithTypeQualifierDefault {
 
         String fqn = nullable ? JAVAX_ANNOTATION_NULLABLE : JAVAX_ANNOTATION_NONNULL;
         PsiClass classDeclaration = (PsiClass) declaration;
-        if (!AnnotationUtil.isAnnotated(classDeclaration, fqn, false, true)) {
+        if (!AnnotationUtil.isAnnotated(classDeclaration, fqn, AnnotationUtil.CHECK_TYPE)) {
             return false;
         }
 

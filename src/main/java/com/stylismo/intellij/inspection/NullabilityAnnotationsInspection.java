@@ -2,7 +2,7 @@ package com.stylismo.intellij.inspection;
 
 import com.google.common.collect.Lists;
 import com.intellij.codeInsight.NullableNotNullManager;
-import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
+import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -35,7 +35,7 @@ import static com.intellij.psi.PsiModifier.STATIC;
 import static com.stylismo.intellij.inspection.QuickFixFactory.createQuickFixes;
 
 
-public class NullabilityAnnotationsInspection extends BaseJavaLocalInspectionTool {
+public class NullabilityAnnotationsInspection extends AbstractBaseJavaLocalInspectionTool {
     private static final String MISSING_NULLABLE_NONNULL_ANNOTATION = "Missing @Nullable/@Nonnull annotation";
     private boolean reportFields = true;
     private boolean reportInitializedStaticFinalFields = true;

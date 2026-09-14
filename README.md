@@ -6,6 +6,7 @@
 [![Downloads][downloads-img]][plugin-link]
 [![Downloads last month][downloads-lm-img]][plugin-link]
 
+<!-- Plugin description -->
 Reports fields, parameters and return values of methods which do not have a nullability annotation, 
 like **@NotNull** or **@Nullable**.<sup>[1](#fn1)</sup>
 
@@ -56,6 +57,7 @@ Go to ```Preferences | Build | Compiler | Configure annotations ...``` to regist
 
 [1](): 
 Any nullability annotation can be used, like JSR-305, JetBrains' or your own as long as you configure them in IDEA.
+<!-- Plugin description end -->
 
 [circleci-img]:         https://circleci.com/gh/stylismo/nullability-annotations-inspection.svg?style=shield
 [circleci-link]:        https://circleci.com/gh/stylismo/nullability-annotations-inspection

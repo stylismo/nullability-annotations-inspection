@@ -1,7 +1,6 @@
 package com.stylismo.intellij.inspection;
 
 import com.intellij.codeInsight.AnnotationUtil;
-import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.NullableNotNullManager;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
@@ -9,7 +8,6 @@ import com.intellij.ide.DataManager;
 import com.intellij.ide.actions.CreatePackageInfoAction;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaElementVisitor;
@@ -32,7 +30,6 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 
 import javax.annotation.Nonnull;
@@ -79,7 +76,7 @@ public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsi
 
     @Override
     public String getFamilyName() {
-        return CodeInsightBundle.message("intention.add.annotation.family");
+        return "Add Annotation";
     }
 
     @Override
@@ -120,11 +117,9 @@ public class AddPackageInfoWithNullabilityDefaultsFix extends LocalQuickFixOnPsi
 
     @Nullable
     private PsiJavaFile createPackageInfoFile(PsiFile file, PsiPackage target) {
-        DataManager.getInstance().getDataContextFromFocus().doWhenDone((Consumer<DataContext>) context -> {
-            AnActionEvent event =
-                    new AnActionEvent(null, context, "", new Presentation(), ActionManager.getInstance(), 0);
-            new CreatePackageInfoAction().actionPerformed(event);
-        });
+        DataManager.getInstance()
+                .getDataContextFromFocusAsync()
+                .onSuccess(context -> new CreatePackageInfoAction().actionPerformed(new AnActionEvent(null, context, "", new Presentation(), ActionManager.getInstance(), 0)));
         return packageInfoFile(target, file.getContainingDirectory());
     }
 
